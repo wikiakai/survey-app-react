@@ -1,6 +1,9 @@
 # SURVEY APP REACT
 
-> Live Demo Coming soon :)
+> Live Demo :)
+**[Visit Project](https://survey-app-react-wikiakai.netlify.app/)**
+
+![screenshot](ss.png)
 
 ## Quick Start
 

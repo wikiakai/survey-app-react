@@ -2,16 +2,12 @@ import { Box, Stack, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ResetButton from '../components/ResetButton'
-import Wrapper from '../components/Wrapper'
+import { QUESTIONS } from '../data'
 
 const Done = () => {
   const navigate = useNavigate()
 
   const [arr, setArr] = React.useState([])
-  const handleReset = () => {
-    localStorage.clear()
-    navigate('/')
-  }
 
   useEffect(() => {
     const A1 = localStorage.getItem('q1')
@@ -29,11 +25,21 @@ const Done = () => {
     console.log(arr)
   }, [])
 
+  const buildMap = (keys, values) => {
+    const map = new Map()
+    for (let i = 0; i < keys.length; i++) {
+      map.set(keys[i], values[i])
+    }
+    return map
+  }
+
   return (
     <Box
       sx={{
         padding: '90px',
-        backgroundColor: '#ffea00',
+        background: 'hsla(339, 100%, 55%, 1)',
+        background:
+          'linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -42,21 +48,28 @@ const Done = () => {
       }}
     >
       {arr[0] === null ? (
-        <Typography variant="h3" fontSize="32px">
+        <Typography variant="h3" fontSize="32px" color="#fff">
           Jawabanmu belum ada
         </Typography>
       ) : (
         <>
-          <Typography variant="h3" fontSize="32px">
+          <Typography variant="h3" fontSize="32px" color="#fff">
             Survey telah selesai, terima kasih
           </Typography>
-          <Typography variant="h5" fontSize="28px">
+          <Typography variant="h5" fontSize="28px" color="#fff">
             Jawabanmu:{' '}
           </Typography>
 
-          <Stack>
-            {arr.map((a) => (
-              <Typography>{a}</Typography>
+          <Stack direction="column">
+            {QUESTIONS.map((a, index) => (
+              <>
+                <Typography fontSize="26px" color="#fff">
+                  {a.q}
+                </Typography>
+                <Typography fontSize="22px" color="#1a237e">
+                  {arr[index]}
+                </Typography>
+              </>
             ))}
           </Stack>
         </>

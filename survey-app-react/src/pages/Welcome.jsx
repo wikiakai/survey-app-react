@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
-import Wrapper from '../components/Wrapper'
 const Welcome = () => {
   return (
     <Box
@@ -14,18 +13,43 @@ const Welcome = () => {
         flexDirection: 'column',
       }}
     >
-      <Typography
-        variant="h3"
+      <Box
         sx={{
-          color: '#fff',
-          fontSize: '32px',
-          fontWeight: '600',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: 'column',
+          mb: '20px',
         }}
       >
-        Welcome
-      </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            color: '#fff',
+            fontSize: '32px',
+            fontWeight: '600',
+          }}
+        >
+          Welcome
+        </Typography>
 
-      <Link to="/survey">Take survey</Link>
+        <Link to="/survey">Take survey</Link>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography>
+          This App created by <b>wikiakai</b>
+        </Typography>
+        <a href="https://github.com/wikiakai/survey-app-react" target="_blank">
+          documentation
+        </a>
+      </Box>
     </Box>
   )
 }

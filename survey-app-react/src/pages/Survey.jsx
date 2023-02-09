@@ -9,10 +9,10 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material'
-import setItem from '../helpers/localStorage'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import ResetButton from '../components/ResetButton'
+import { pink } from '@mui/material/colors'
 const Survey = () => {
   const QUESTIONS = [
     {
@@ -79,9 +79,8 @@ const Survey = () => {
 
   const [value, setValue] = React.useState('')
   const [page, setPage] = React.useState(1)
-  const [lock, setLock] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
-  const [timer, setTimer] = React.useState(150)
+  const [timer, setTimer] = React.useState(15)
 
   const navigate = useNavigate()
   const handleChange = (event) => {
@@ -89,9 +88,11 @@ const Survey = () => {
   }
 
   const handleSend = () => {
-    if (page === 9) {
+    if (page === 10) {
+      localStorage.setItem(`q${page}`, value)
       navigate('/done')
     } else {
+      setTimer(15)
       setLoading(true)
       setPage(page + 1)
       localStorage.setItem(`progressPage`, page + 1)
@@ -105,6 +106,7 @@ const Survey = () => {
   }
 
   useEffect(() => {
+    setTimer(15)
     const progressPage = localStorage.getItem('progressPage')
     if (progressPage) {
       setPage(JSON.parse(progressPage))
@@ -114,79 +116,148 @@ const Survey = () => {
   }, [page])
 
   useEffect(() => {
-    setTimeout(() => {
+    const myTimer = setInterval(() => {
       setTimer(timer - 1)
     }, 1000)
+
     if (timer === 0) {
       navigate('/end')
     }
-    clearTimeout()
+    return () => clearInterval(myTimer)
   }, [timer])
 
   return (
     <Box
       sx={{
-        width: '800px',
-        height: '600px',
-        backgroundColor: '#03a9f4',
+        padding: '90px',
+        background: 'hsla(148, 89%, 78%, 1)',
+        background:
+          'linear-gradient(270deg, hsla(148, 89%, 78%, 1) 0%, hsla(210, 81%, 22%, 1) 100%)',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        flexDirection: 'column',
+        boxShadow: '-4px 0px 55px 17px rgba(17,163,157,0.41)',
       }}
     >
       {loading ? (
-        <CircularProgress />
+        <CircularProgress color="warning" />
       ) : (
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          spacing="10"
-        >
-          <Box>
-            <Typography variant="h4">Question {page}/10</Typography>
-          </Box>
-          <Box>
-            <Typography>{QUESTIONS[page].q}</Typography>
-            <Typography>Your time: {timer}</Typography>
-          </Box>
-          <Box>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                value={value}
-                onChange={handleChange}
+        <>
+          <Stack
+            direction="column"
+            justifyContent="space-around"
+            alignItems="center"
+            sx={{
+              gap: '15px',
+              mb: '70px',
+            }}
+          >
+            <Box>
+              <Typography
+                variant="h4"
+                color="white"
+                fontSize="28px"
+                fontWeight="600"
               >
-                <FormControlLabel
-                  value={QUESTIONS[page].opt1}
-                  control={<Radio />}
-                  label={QUESTIONS[page].opt1}
-                />
-                <FormControlLabel
-                  value={QUESTIONS[page].opt2}
-                  control={<Radio />}
-                  label={QUESTIONS[page].opt2}
-                />
-                <FormControlLabel
-                  value={QUESTIONS[page].opt3}
-                  control={<Radio />}
-                  label={QUESTIONS[page].opt3}
-                />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-          <Box>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleSend}
-              disabled={value === ''}
+                Q{page}/10
+              </Typography>
+              <Typography color="white" fontSize="28px">
+                {QUESTIONS[page - 1].q}
+              </Typography>
+            </Box>
+
+            <Box>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-controlled-radio-buttons-group"
+                  name="controlled-radio-buttons-group"
+                  value={value}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    sx={{
+                      color: '#fff',
+                    }}
+                    value={QUESTIONS[page - 1].opt1}
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#fff',
+                          '&.Mui-checked': {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={QUESTIONS[page - 1].opt1}
+                  />
+                  <FormControlLabel
+                    sx={{
+                      color: '#fff',
+                    }}
+                    value={QUESTIONS[page - 1].opt2}
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#fff',
+                          '&.Mui-checked': {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={QUESTIONS[page - 1].opt2}
+                  />
+                  <FormControlLabel
+                    sx={{
+                      color: '#fff',
+                    }}
+                    value={QUESTIONS[page - 1].opt3}
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#fff',
+                          '&.Mui-checked': {
+                            color: pink[600],
+                          },
+                        }}
+                      />
+                    }
+                    label={QUESTIONS[page - 1].opt3}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+            <Box
+              sx={{
+                mt: '10px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                gap: '5px',
+              }}
             >
-              {lock ? 'Lock' : 'Send'}
-            </Button>
-          </Box>
-        </Stack>
+              <Button
+                variant={value === '' ? 'outlined' : 'contained'}
+                color="secondary"
+                onClick={handleSend}
+                disabled={value === ''}
+              >
+                {page === 10 ? 'Submit' : 'Next'}
+              </Button>
+              <Typography
+                fontStyle="italic"
+                color={timer < 10 ? pink[600] : '#fff'}
+              >
+                Your time: {timer}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <ResetButton />
+        </>
       )}
     </Box>
   )
